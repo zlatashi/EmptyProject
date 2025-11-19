@@ -1,41 +1,39 @@
-# Prerequisites
-*.d
+# -------------------
+# Windows
+# -------------------
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+# -------------------
+# CMake
+# -------------------
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+build/
+out/
 
-# Precompiled Headers
-*.gch
-*.pch
-
-# Linker files
-*.ilk
-
-# Debugger Files
+# -------------------
+# Visual Studio
+# -------------------
+.vs/
+*.vcxproj.user
+*.suo
+*.user
+*.ipch
 *.pdb
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
-
-# debug information files
-*.dwo
+*.idb
+*.iobj
+*.lastbuildstate
