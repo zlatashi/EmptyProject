@@ -5,9 +5,9 @@
 #include <sstream>
 #include <future>
 
-std::map<std::string, size_t> SearchServer::get_indexes_for_request_words(std::vector<std::string>& words) {
+std::map<std::string, size_t> SearchServer::get_indexes_for_request_words(const std::vector<std::string>& words) {
     std::map<std::string, size_t> freq_map;
-    for (auto& word : words) {
+    for (const auto& word : words) {
         freq_map[word] = _index->getWordCount(word).size();
     }
     return freq_map;
@@ -28,10 +28,10 @@ void SearchServer::handleRequest(const std::string& request, std::vector<Relativ
     std::set<size_t> current_docs;
     bool first_word = true;
 
-    for (auto& w : words) {
+    for (const auto& w : words) {
         auto entries = _index->getWordCount(w);
         std::set<size_t> docs_for_word;
-        for (auto& e : entries) docs_for_word.insert(e._doc_id);
+        for (const auto& e : entries) docs_for_word.insert(e._doc_id);
 
         if (first_word) {
             current_docs = docs_for_word;
@@ -45,20 +45,21 @@ void SearchServer::handleRequest(const std::string& request, std::vector<Relativ
             current_docs = intersection;
         }
 
-        for (auto& e : entries) {
-            if (current_docs.count(e._doc_id))
+        for (const auto& e : entries) {
+            if (current_docs.count(e._doc_id)) {
                 doc_abs_rank[e._doc_id] += e._count;
+            }
         }
     }
 
     if (current_docs.empty()) return;
 
     float max_rank = 0.0f;
-    for (auto& [doc_id, abs_rank] : doc_abs_rank)
+    for (const auto& [doc_id, abs_rank] : doc_abs_rank)
         if (abs_rank > max_rank) max_rank = abs_rank;
 
     std::vector<RelativeIndex> relative;
-    for (auto& [doc_id, abs_rank] : doc_abs_rank) {
+    for (const auto& [doc_id, abs_rank] : doc_abs_rank) {
         relative.emplace_back(doc_id, abs_rank / max_rank);
     }
 
@@ -77,11 +78,12 @@ std::vector<std::vector<RelativeIndex>> SearchServer::search(const std::vector<s
     std::vector<std::future<void>> futures;
 
     for (size_t i = 0; i < queries_input.size(); ++i) {
-        futures.push_back(std::async(std::launch::async, [this, &queries_input, &results, i, max_responses] {
+        futures.push_back(std::async(std::launch::async, [this, &queries_input, &results, i, max_responses]() {
             handleRequest(queries_input[i], results[i], max_responses);
             }));
     }
 
+    // Ждём завершения всех потоков
     for (auto& fut : futures) fut.get();
 
     return results;
