@@ -46,4 +46,4 @@ mkdir build
 cd build
 cmake ..
 cmake --build .
-./search_engine
+./search_server
