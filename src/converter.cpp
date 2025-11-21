@@ -97,8 +97,7 @@ const std::string& ConverterJSON::getName() const {
 const std::string& ConverterJSON::getVersion() const {
     return _version;
 }
-
-void ConverterJSON::putAnswers(std::vector<std::vector<RelativeIndex>>& answers) {
+void ConverterJSON::putAnswers(const std::vector<std::vector<RelativeIndex>>& answers) {
     std::ofstream file(_answers_path);
     if (!file.is_open()) {
         throw std::runtime_error("Cannot create answers file: " + _answers_path);
